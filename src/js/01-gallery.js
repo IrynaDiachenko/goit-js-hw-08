@@ -6,21 +6,21 @@ import { galleryItems } from './gallery-items';
 
 const galleryEl = document.querySelector('.gallery');
 
-const galleryItemsString = galleryItems.map(item => (
+const galleryItemsString = galleryItems.map(item =>
   `<a class="gallery__item" href="${item.original}">
     <img
       class="gallery__image"
       src="${item.preview}"
       alt="${item.description}"
     />
-  </a>`
-).join('');
+  </a>`.join(''),
+);
 galleryEl.insertAdjacentElement('afterbegin', galleryItemsString);
 
 let gallery = new SimpleLightbox('.gallery a', {
-    captionsData: 'alt',
-    captionDelay: 250,
-    captionPosition: 'botton',
+  captionsData: 'alt',
+  captionDelay: 250,
+  captionPosition: 'botton',
 });
 
 // console.log(galleryItems);
