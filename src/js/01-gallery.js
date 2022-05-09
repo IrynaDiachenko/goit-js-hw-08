@@ -21,4 +21,4 @@ let gallery = new SimpleLightbox('.gallery a', {
   captionPosition: 'botton',
 });
 
-// console.log(galleryItems);
+console.log(galleryItems);
