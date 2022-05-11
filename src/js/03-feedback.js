@@ -1,43 +1,49 @@
-import throttle from 'lodash.throttle';
+import throttle from 'lodash/throttle';
 
-const STORAGE_KEY = 'feedback-form-state';
+const form = document.querySelector('.feedback-form');
+form.addEventListener('input', throttle(inputText, 500));
+form.addEventListener('submit', submitForm);
+const INPUT_KEY = 'feedback-form-state';
+let objectInput = {};
 
-const refs = {
-  form: document.querySelector('.feedback-form'),
-  mail: document.querySelector('.feedback-form input'),
-  textarea: document.querySelector('feedback-form textarea'),
-};
+inForm();
 
-const formData = {};
-
-refs.form.addEventListener('submit', onFormSubmit);
-refs.form.addEventListener('input', throttle(onFormInput, 500));
-
-populateTextarea();
-
-function onFormInput(event) {
-  formData[event.target.name] = event.target.value;
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(formData));
-}
-
-function onFormSubmit(event) {
+function submitForm(event) {
   event.preventDefault();
-  event.target.reset();
-  console.log(
-    'feedback-form-state',
-    JSON.parse(localStorage.getItem(STORAGE_KEY)),
-  );
-  localStorage.removeItem(STORAGE_KEY);
+  const formEl = event.target.elements;
+  const email = formEl.email.value;
+  const message = formEl.message.value;
+  if (message === '' && email === '') {
+    return alert('Поля "email" та "message" мають бути заповнені!');
+  }
+  if (email === '') {
+    return alert('Поле "email" мають бути заповнені!');
+  }
+  if (message === '') {
+    return alert('Поле "message" мають бути заповнені!');
+  }
+  objectInput = {
+    email,
+    message,
+  };
+  console.log(objectInput);
+
+  form.reset();
+  localStorage.removeItem(INPUT_KEY);
 }
 
-function populateTextarea() {
-  const savedMessege = JSON.parse(localStorage.getItem(STORAGE_KEY));
+function inputText(event) {
+  objectInput[event.target.name] = event.target.value;
+  localStorage.setItem(INPUT_KEY, JSON.stringify(objectInput));
+}
 
-  if (savedMessege && savedMessege.message) {
-    refs.textarea.value = savedMessege.message;
-  }
-
-  if (savedMessege && savedMessege.email) {
-    refs.mail.value = savedMessege.email;
+function inForm() {
+  let saveText = localStorage.getItem(INPUT_KEY);
+  if (saveText) {
+    saveText = JSON.parse(saveText);
+    Object.entries(saveText).forEach(([name, value]) => {
+      objectInput[name] = value;
+      form.elements[name].value = value;
+    });
   }
 }
